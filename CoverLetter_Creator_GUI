@@ -1,0 +1,111 @@
+import tkinter as tk
+import textwrap
+
+class GUI:
+
+    def __init__(self):
+        self.window = tk.Tk()
+        self.inter_log = Internal_Logic()
+
+    def buildGUI(self):
+        self.coverletter_label = tk.Label(self.window, textvariable=self.inter_log.cl_label_txt, justify=tk.LEFT)
+        self.coverletter_label.pack()
+        self.curr_editing_label = tk.Label(self.window, textvariable=self.inter_log.curr_editing_txt)
+        self.curr_editing_label.pack()
+        self.entry = tk.Entry(self.window, textvariable=self.inter_log.entry_txt)
+        self.entry.pack()
+
+    
+    # Way to get Key Sym: https://stackoverflow.com/questions/66815257/check-if-a-specific-key-is-pressed-in-tkinter
+    def bindKeys(self):
+        self.window.bind("<Return>", self.inter_log.enterKeyHandler)
+
+    def run(self):
+        self.buildGUI()
+        self.bindKeys()
+        self.window.mainloop()
+
+
+class Internal_Logic:
+
+    def __init__(self):
+        self.cl_txts = [
+            'Dear Hiring Manager,\n\nMy name is ', # 1
+            ', and I came across your ', # 2
+            ' position at ', # 3
+            ' and would like to submit my resume for your consideration. The position at ', # 4
+            ' interests me as ', # 5
+            '. ', # 6
+            '.\n\nYour company\'s mission statement to ',  # Check if the user included a period or not (Maybe?) # 7
+            ' aligns with my personal values of ',  # 8
+            '. It would be personally gratifiying to work for ', # 9
+            ' as ', # 10
+            '.\n\nI believe I would be a good fit for ', # 11
+            ' because of my ', # 12
+            '; ', # 13
+            '. I am looking for a company like yours where I can learn and grow with the company and apply my excellent skills in ', # 14
+            ' which I developed ', # 15
+            '.\n\nI also find that your work culture of ', # 16
+            ' resonates with me and my personality, and is exactly what I am looking for from a company. I\'m excited about the opportunity to contribute to your company while furthering my understanding of ', # 17
+            '. Thank you so much for your consideration and I hope to hear back from you soon!\n\nSincerely,\n' # 18
+        ]
+        
+        self.input_prompt = [
+            '[Name]', # 1
+            '[Job Position]', # 2
+            '[Company]', # 3
+            '[Company]', # 4
+            '[Reason]', # 5
+            '[Background Info About Yourself (Relates to Reason) (Full Sentence pwease)]', # 6
+            '[Company Motto]', # 7
+            '[Related Personal Value(s)]', # 8
+            '[Company]', # 9
+            '[Reason]', # 10
+            '[Company]', # 11
+            '[Reason/Experience]', # 12
+            '[Expand on Reason/Experience]', # 13
+            '[Relevant Skill(s)]', # 14
+            '[Location/Experience]', # 15
+            '[Work Culture Values]', # 16
+            '[Skill(s) to Grow on the Job]', # 17
+            '[Name]' # 18
+        ]
+
+        self.entries = list(self.input_prompt)
+
+        # CoverLetter
+        self.cl_label_txt = tk.StringVar()
+        self.coverletter_txt = self.buildCoverLetterStr()
+        self.cl_label_txt.set(self.coverletter_txt)
+
+        # Editing Label
+        self.curr_editing_txt = tk.StringVar()
+        self.editing_num = 0
+        self.curr_editing_txt.set(str(self.input_prompt[self.editing_num][1:-1]) + ':')
+
+        # Entry
+        self.entry_txt = tk.StringVar()
+
+        
+    def buildCoverLetterStr(self):
+        coverletter = ''
+        for i in range(len(self.cl_txts)):
+            coverletter += self.cl_txts[i] + self.input_prompt[i]
+        
+        # Wrap
+        coverletter = textwrap.fill(coverletter, replace_whitespace=False)
+        
+        return coverletter
+
+    def enterKeyHandler(self, event):
+        print("Enter (Return) Key Pressed")
+        print('Entry Text:', self.entry_txt.get())
+        print('Label Text:', self.cl_label_txt.get())
+
+        self.cl_label_txt.set("Testing")
+
+
+
+if __name__ == '__main__':
+    prog = GUI()
+    prog.run()
